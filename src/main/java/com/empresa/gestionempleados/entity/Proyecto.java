@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "proyectos")
@@ -29,4 +31,8 @@ public class Proyecto {
 
     @Column(name = "fecha_fin", nullable = false)
     private LocalDate fechaFin;
+
+    @ManyToMany(mappedBy = "proyectos")
+    private Set<Empleado> empleados = new HashSet<>();
+
 }
