@@ -26,6 +26,9 @@ public class Proyecto {
     @Column(length = 500)
     private String descripcion;
 
+    @Column(length = 100)
+    private String estado;
+
     @Column(name = "fecha_inicio", nullable = false)
     private LocalDate fechaInicio;
 
