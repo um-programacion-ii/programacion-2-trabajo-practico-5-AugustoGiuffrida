@@ -16,11 +16,11 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
     List<Empleado> findByFechaContratacionAfter(LocalDate fechaContratacion);
     List<Empleado> findByDepartamento(Departamento departamento);
     List<Empleado> findBySalarioBetween(BigDecimal min, BigDecimal max);
-    List<Empleado> findFechaContratacionBetween(LocalDate inicio, LocalDate fin);
+    List<Empleado> findByFechaContratacionBetween(LocalDate inicio, LocalDate fin);
 
     @Query("SELECT e FROM Empleado e WHERE e.departamento.nombre = :nombreDepartamento")
     List<Empleado> findByNombreDepartamento(@Param("nombreDepartamento") String nombreDepartamento);
 
-    @Query("SELECT AVG(e.salario) FROM Empleado a WHERE e.departamendo.id = :departamentoID")
+    @Query("SELECT AVG(e.salario) FROM Empleado e WHERE e.departamendo.id = :departamentoID")
     Optional<BigDecimal> findAverageSalaryByDepartamento(@Param("departamentoID") Long departamentoId);
 }
