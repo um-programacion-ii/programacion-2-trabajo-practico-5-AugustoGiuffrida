@@ -12,8 +12,8 @@ public interface EmpleadoService {
     void delete(Long id);
     Empleado findById(Long id);
     List<Empleado> findAll();
-    List<Empleado> findByDepartamento(String nombreDepartamento);
-    List<Empleado> findByAverageSalary(Long departamentoId);
+    List<Empleado> findByNombreDepartamento(String nombreDepartamento);
+    BigDecimal findAverageSalaryByDepartamento(Long departamentoId);
     List<Empleado> findBySalaryRange(BigDecimal min, BigDecimal max);
     List<Empleado> findByHiringDate(LocalDate inicio, LocalDate fin);
 }
