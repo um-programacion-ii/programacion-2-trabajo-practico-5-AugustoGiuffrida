@@ -93,6 +93,13 @@ public class TestEmpleadoService {
     }
 
     @Test
+    void findNonExistentEmpleadoById(){
+        when(empleadoRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(EmpleadoNoEncontradoException.class,()->empleadoService.findById(1L));
+        verify(empleadoRepository).findById(1L);
+    }
+
+    @Test
     void findAllEmpleados(){
         Empleado empleado = new Empleado();
 

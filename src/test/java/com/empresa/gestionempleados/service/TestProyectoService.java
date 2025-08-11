@@ -88,6 +88,13 @@ public class TestProyectoService {
     }
 
     @Test
+    void findNonExistentProyectoById(){
+        when(proyectoRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(ProyectoNoEncontradoException.class,()->proyectoService.findById(1L));
+        verify(proyectoRepository).findById(1L);
+    }
+
+    @Test
     void findAll(){
         Proyecto proyecto = new Proyecto();
 
