@@ -15,10 +15,9 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -132,5 +131,38 @@ public class TestProyectoController {
                 .andExpect(jsonPath("$.nombre").value("Proyecto A"));
     }
 
+    @Test
+    void PUTNonExistentProyecto_ReturnsStatus404() throws Exception{
+        Proyecto proyecto = new Proyecto();
+        Long id = 1L;
+        proyecto.setId(id);
+
+        when(proyectoService.update(id,proyecto)).thenThrow(new ProyectoNoEncontradoException(id));
+
+        mockMvc.perform(put("/api/proyectos/"+id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(proyecto)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void DELETEEmpleado_ReturnsStatus204() throws Exception{
+        Proyecto proyecto = new Proyecto();
+        Long id = 1L;
+        proyecto.setId(1L);
+
+        mockMvc.perform(delete("/api/proyectos/"+id))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void DELETEProyecto_NotFound_ReturnsStatus404() throws Exception {
+        Long id = 1L;
+
+        doThrow(new ProyectoNoEncontradoException(id)).when(proyectoService).delete(id);
+
+        mockMvc.perform(delete("/api/proyectos/" + id))
+                .andExpect(status().isNotFound());
+    }
 
 }
