@@ -98,7 +98,7 @@ public class TestProyectoController {
     }
 
     @Test
-    void POSTProyecto_CreatesNewProjyectoAndReturns201() throws Exception {
+    void POSTProyecto_CreatesNewProyectoAndReturns201() throws Exception {
         Proyecto proyecto = new Proyecto();
         Long id = 1L;
         proyecto.setId(id);
@@ -115,7 +115,7 @@ public class TestProyectoController {
     }
 
     @Test
-    void PUTProyecto_ReturnsProjectoAndStatus200() throws Exception {
+    void PUTProyecto_ReturnsProyectoAndStatus200() throws Exception {
         Proyecto proyecto = new Proyecto();
         Long id = 1L;
         proyecto.setId(id);
@@ -146,7 +146,7 @@ public class TestProyectoController {
     }
 
     @Test
-    void DELETEEmpleado_ReturnsStatus204() throws Exception{
+    void DELETEProyecto_ReturnsStatus204() throws Exception{
         Proyecto proyecto = new Proyecto();
         Long id = 1L;
         proyecto.setId(1L);
