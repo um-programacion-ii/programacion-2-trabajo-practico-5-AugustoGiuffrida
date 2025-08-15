@@ -30,7 +30,7 @@ spring:
     activate:
       on-profile: mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/empleados_db?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/empleados_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: empleados_user
     password: empleados_pass
@@ -49,7 +49,7 @@ spring:
     activate:
       on-profile: postgres
   datasource:
-    url: jdbc:postgresql://localhost:5432/empleados_db
+    url: jdbc:postgresql://localhost:5432/empleados_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     driver-class-name: org.postgresql.Driver
     username: empleados_user
     password: empleados_pass
