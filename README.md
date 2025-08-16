@@ -187,39 +187,46 @@ mvn test -Dspring.profiles.active=postgres
 
 ## 🌐 Endpoints REST
 
-### 🏢 Departamentos
-| Método | Endpoint                      | Descripción                              |
-| ------ | ----------------------------- | ---------------------------------------- |
-| GET    | `/api/departamentos`          | Listar todos los departamentos           |
-| GET    | `/api/departamentos/{id}`     | Buscar un departamento por ID            |
-| POST   | `/api/departamentos`          | Crear un nuevo departamento              |
-| PUT    | `/api/departamentos/{id}`     | Actualizar los datos de un departamento  |
-| DELETE | `/api/departamentos/{id}`     | Eliminar un departamento por su ID       |
+### 📚 Departamentos
 
+| Método | Endpoint                  | Parámetros                                        | Descripción                          | Respuesta                                                               |
+| ------ | ------------------------- | ------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------- |
+| GET    | `/api/departamentos`      | —                                                 | Listar todos los departamentos       | `200 OK` + lista de `Departamento`                                      |
+| GET    | `/api/departamentos/{id}` | `id` (PathVariable)                               | Obtener un departamento por ID       | `200 OK` + `Departamento` <br> `404 NOT FOUND` si no existe             |
+| POST   | `/api/departamentos`      | `departamento` (RequestBody)                      | Crear un nuevo departamento          | `201 CREATED` + `Departamento` creado                                   |
+| PUT    | `/api/departamentos/{id}` | `id` (PathVariable), `departamento` (RequestBody) | Actualizar un departamento existente | `200 OK` + `Departamento` actualizado <br> `404 NOT FOUND` si no existe |
+| DELETE | `/api/departamentos/{id}` | `id` (PathVariable)                               | Eliminar un departamento             | `204 NO CONTENT` <br> `404 NOT FOUND` si no existe                      |
 
-### 👥 Empleados
-| Método | Endpoint                                            | Descripción                                          |
-| ------ | --------------------------------------------------- | ---------------------------------------------------- |
-| GET    | `/api/empleados`                                   | Listar todos los empleados                           |
-| GET    | `/api/empleados/{id}`                              | Buscar un empleado por ID                            |
-| POST   | `/api/empleados`                                   | Crear un nuevo empleado                              |
-| PUT    | `/api/empleados/{id}`                              | Actualizar datos de un empleado                      |
-| DELETE | `/api/empleados/{id}`                              | Eliminar un empleado por su ID                       |
-| GET    | `/api/empleados/departamento/{nombreDepartamento}` | Listar empleados por nombre de departamento          |
-| GET    | `/api/empleados/promedio-salario/{departamentoId}` | Obtener el salario promedio de un departamento       |
-| GET    | `/api/empleados/rango-salario?min=1000&max=3000`   | Buscar empleados dentro de un rango de salarios      |
-| GET    | `/api/empleados/fecha-contratacion?inicio=2024-01-01&fin=2024-12-31` | Buscar empleados contratados en un rango de fechas |
+---
 
+### 📚 Empleados
 
-### 📂 Proyectos
-| Método | Endpoint                         | Descripción                          |
-| ------ | -------------------------------- | ------------------------------------ |
-| GET    | `/api/proyectos`                 | Listar todos los proyectos            |
-| GET    | `/api/proyectos/{id}`            | Buscar un proyecto por ID             |
-| GET    | `/api/proyectos/estado/{status}` | Listar proyectos por estado           |
-| POST   | `/api/proyectos`                 | Crear un nuevo proyecto               |
-| PUT    | `/api/proyectos/{id}`            | Actualizar los datos de un proyecto   |
-| DELETE | `/api/proyectos/{id}`            | Eliminar un proyecto por su ID        |
+| Método | Endpoint                                           | Parámetros                                    | Descripción                                    | Respuesta                                                               |
+| ------ | -------------------------------------------------- | --------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------- |
+| GET    | `/api/empleados`                                   | —                                             | Listar todos los empleados                     | `200 OK` + lista de `Empleado`                                          |
+| GET    | `/api/empleados/{id}`                              | `id` (PathVariable)                           | Obtener un empleado por ID                     | `200 OK` + `Empleado` <br> `404 NOT FOUND` si no existe                 |
+| POST   | `/api/empleados`                                   | `empleado` (RequestBody)                      | Crear un empleado                              | `201 CREATED` + `Empleado` creado                                       |
+| PUT    | `/api/empleados/{id}`                              | `id` (PathVariable), `empleado` (RequestBody) | Actualizar un empleado existente               | `200 OK` + `Empleado` actualizado <br> `404 NOT FOUND` si no existe     |
+| DELETE | `/api/empleados/{id}`                              | `id` (PathVariable)                           | Eliminar un empleado                           | `204 NO CONTENT` <br> `404 NOT FOUND` si no existe                      |
+| GET    | `/api/empleados/departamento/{nombreDepartamento}` | `nombreDepartamento` (PathVariable)           | Listar empleados de un departamento por nombre | `200 OK` + lista de `Empleado` <br> `404 NOT FOUND` si no hay empleados |
+| GET    | `/api/empleados/promedio-salario/{departamentoId}` | `departamentoId` (PathVariable)               | Obtener salario promedio de un departamento    | `200 OK` + `BigDecimal` <br> `404 NOT FOUND` si no hay empleados        |
+| GET    | `/api/empleados/rango-salario`                     | `min` y `max` (RequestParam)                  | Listar empleados dentro de un rango de salario | `200 OK` + lista de `Empleado` <br> `404 NOT FOUND` si no hay empleados |
+| GET    | `/api/empleados/fecha-contratacion`                | `inicio` y `fin` (RequestParam, LocalDate)    | Listar empleados contratados entre fechas      | `200 OK` + lista de `Empleado` <br> `404 NOT FOUND` si no hay empleados |
+
+---
+
+### 📚 Proyectos
+
+| Método | Endpoint                         | Parámetros                                    | Descripción                 | Respuesta                                                           |
+| ------ | -------------------------------- | --------------------------------------------- | --------------------------- | ------------------------------------------------------------------- |
+| GET    | `/api/proyectos`                 | —                                             | Listar todos los proyectos  | `200 OK` + lista de `Proyecto`                                      |
+| GET    | `/api/proyectos/{id}`            | `id` (PathVariable)                           | Obtener un proyecto por ID  | `200 OK` + `Proyecto` <br> `404 NOT FOUND` si no existe             |
+| GET    | `/api/proyectos/estado/{status}` | `status` (PathVariable)                       | Listar proyectos por estado | `200 OK` + lista de `Proyecto`                                      |
+| POST   | `/api/proyectos`                 | `proyecto` (RequestBody)                      | Crear un proyecto           | `201 CREATED` + `Proyecto` creado                                   |
+| PUT    | `/api/proyectos/{id}`            | `id` (PathVariable), `proyecto` (RequestBody) | Actualizar un proyecto      | `200 OK` + `Proyecto` actualizado <br> `404 NOT FOUND` si no existe |
+| DELETE | `/api/proyectos/{id}`            | `id` (PathVariable)                           | Eliminar un proyecto        | `204 NO CONTENT` <br> `404 NOT FOUND` si no existe                  |
+
+---
 
 
 ## 📊 Casos de Uso del Sistema
