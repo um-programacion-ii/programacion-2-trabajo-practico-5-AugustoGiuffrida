@@ -110,8 +110,8 @@ Desarrollar un sistema de gestión de empleados utilizando Spring Boot con JPA, 
 > 💡 **Nota**: Esta estimación considera la complejidad de configurar múltiples bases de datos, Docker y el aprendizaje de JPA. El tiempo incluye la configuración de profiles y la containerización de las bases de datos.
 
 ## 👨‍🎓 Información del Alumno
-- **Nombre y Apellido**: [Nombre y Apellido del Alumno]
-- **Legajo**: [Número de Legajo]
+- **Nombre y Apellido**: Augusto Giuffrida
+- **Legajo**: 60137
 
 > ⚠️ **IMPORTANTE**: Este trabajo práctico se realiza **INDIVIDUALMENTE**. Aunque se utilizan herramientas de colaboración como Pull Requests y Code Review, estas son para mantener buenas prácticas de desarrollo y un historial ordenado. Todo el desarrollo debe ser realizado por el mismo estudiante.
 
@@ -141,6 +141,86 @@ Desarrollar un sistema de gestión de empleados utilizando Spring Boot con JPA, 
 - JUnit 5.10.1
 - Mockito 5.8.0
 - Git y GitHub
+
+## 🖥️ Instrucciones de Instalación
+### 🔁 Clonar el Repositorio
+```bash
+git clone https://github.com/um-programacion-ii/programacion-2-trabajo-practico-5-AugustoGiuffrida.git
+
+cd programacion-2-trabajo-practico-5-AugustoGiuffrida
+```
+
+### Configurar Docker
+Inicia los contenedores de MySQL y PostgreSQL ejecutando:
+
+```bash
+docker compose up -d
+```
+Esto levantará las bases de datos especificadas en el archivo `docker-compose.yml`.
+
+## ▶️ Ejecutar el Proyecto
+El proyecto usa perfiles `dev`, `mysql` y `postgres`.
+
+```bash
+#Perfil para H2
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+#Perfil para mysql
+mvn spring-boot:run -Dspring-boot.run.profiles=mysql
+
+#Perfil para postgres
+mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+```
+
+## ▶️ Ejecutar tests
+
+```bash
+#Perfil para H2
+mvn test -Dspring.profiles.active=dev
+
+#Perfil para mysql
+mvn test -Dspring.profiles.active=mysql
+
+#Perfil para postgres
+mvn test -Dspring.profiles.active=postgres
+```
+
+## 🌐 Endpoints REST
+
+### 🏢 Departamentos
+| Método | Endpoint                      | Descripción                              |
+| ------ | ----------------------------- | ---------------------------------------- |
+| GET    | `/api/departamentos`          | Listar todos los departamentos           |
+| GET    | `/api/departamentos/{id}`     | Buscar un departamento por ID            |
+| POST   | `/api/departamentos`          | Crear un nuevo departamento              |
+| PUT    | `/api/departamentos/{id}`     | Actualizar los datos de un departamento  |
+| DELETE | `/api/departamentos/{id}`     | Eliminar un departamento por su ID       |
+
+
+### 👥 Empleados
+| Método | Endpoint                                            | Descripción                                          |
+| ------ | --------------------------------------------------- | ---------------------------------------------------- |
+| GET    | `/api/empleados`                                   | Listar todos los empleados                           |
+| GET    | `/api/empleados/{id}`                              | Buscar un empleado por ID                            |
+| POST   | `/api/empleados`                                   | Crear un nuevo empleado                              |
+| PUT    | `/api/empleados/{id}`                              | Actualizar datos de un empleado                      |
+| DELETE | `/api/empleados/{id}`                              | Eliminar un empleado por su ID                       |
+| GET    | `/api/empleados/departamento/{nombreDepartamento}` | Listar empleados por nombre de departamento          |
+| GET    | `/api/empleados/promedio-salario/{departamentoId}` | Obtener el salario promedio de un departamento       |
+| GET    | `/api/empleados/rango-salario?min=1000&max=3000`   | Buscar empleados dentro de un rango de salarios      |
+| GET    | `/api/empleados/fecha-contratacion?inicio=2024-01-01&fin=2024-12-31` | Buscar empleados contratados en un rango de fechas |
+
+
+### 📂 Proyectos
+| Método | Endpoint                         | Descripción                          |
+| ------ | -------------------------------- | ------------------------------------ |
+| GET    | `/api/proyectos`                 | Listar todos los proyectos            |
+| GET    | `/api/proyectos/{id}`            | Buscar un proyecto por ID             |
+| GET    | `/api/proyectos/estado/{status}` | Listar proyectos por estado           |
+| POST   | `/api/proyectos`                 | Crear un nuevo proyecto               |
+| PUT    | `/api/proyectos/{id}`            | Actualizar los datos de un proyecto   |
+| DELETE | `/api/proyectos/{id}`            | Eliminar un proyecto por su ID        |
+
 
 ## 📊 Casos de Uso del Sistema
 
