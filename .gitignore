@@ -1,6 +1,11 @@
 # Compiled class file
 *.class
-
+target/
+.idea/
+gestion-empleados.iml
+HELP.md
+mvnw.cmd
+mvnw
 # Log file
 *.log
 
