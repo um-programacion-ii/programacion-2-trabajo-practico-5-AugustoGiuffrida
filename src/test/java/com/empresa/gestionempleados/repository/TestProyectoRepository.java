@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("postgres") 
+@ActiveProfiles("mysql")
 public class TestProyectoRepository {
 
     @Autowired
@@ -27,18 +27,18 @@ public class TestProyectoRepository {
     @BeforeEach
     void setUp() {
         proyecto1 = new Proyecto();
-        proyecto1.setNombre("Proyecto Alpha");
+        proyecto1.setNombre("Proyecto A");
         proyecto1.setDescripcion("Primer proyecto");
         proyecto1.setEstado("Activo");
-        proyecto1.setFechaInicio(LocalDate.of(2025, 1, 1)); // <-- obligatorio
-        proyecto1.setFechaFin(LocalDate.of(2025, 12, 31));  // <-- obligatorio
+        proyecto1.setFechaInicio(LocalDate.of(2025, 1, 1));
+        proyecto1.setFechaFin(LocalDate.of(2025, 12, 31));
 
         proyecto2 = new Proyecto();
-        proyecto2.setNombre("Proyecto Beta");
+        proyecto2.setNombre("Proyecto B");
         proyecto2.setDescripcion("Segundo proyecto");
         proyecto2.setEstado("Finalizado");
-        proyecto2.setFechaInicio(LocalDate.of(2024, 1, 1)); // <-- obligatorio
-        proyecto2.setFechaFin(LocalDate.of(2024, 12, 31));  // <-- obligatorio
+        proyecto2.setFechaInicio(LocalDate.of(2024, 1, 1));
+        proyecto2.setFechaFin(LocalDate.of(2024, 12, 31));
     }
 
 
@@ -47,7 +47,7 @@ public class TestProyectoRepository {
         Proyecto guardado = proyectoRepository.save(proyecto1);
 
         assertNotNull(guardado.getId());
-        assertEquals("Proyecto Alpha", guardado.getNombre());
+        assertEquals("Proyecto A", guardado.getNombre());
         assertTrue(proyectoRepository.existsById(guardado.getId()));
     }
 
@@ -60,10 +60,10 @@ public class TestProyectoRepository {
         List<Proyecto> finalizados = proyectoRepository.findByEstado("Finalizado");
 
         assertEquals(1, activos.size());
-        assertEquals("Proyecto Alpha", activos.get(0).getNombre());
+        assertEquals("Proyecto A", activos.get(0).getNombre());
 
         assertEquals(1, finalizados.size());
-        assertEquals("Proyecto Beta", finalizados.get(0).getNombre());
+        assertEquals("Proyecto B", finalizados.get(0).getNombre());
     }
 
     @Test
