@@ -110,8 +110,8 @@ Desarrollar un sistema de gestión de empleados utilizando Spring Boot con JPA, 
 > 💡 **Nota**: Esta estimación considera la complejidad de configurar múltiples bases de datos, Docker y el aprendizaje de JPA. El tiempo incluye la configuración de profiles y la containerización de las bases de datos.
 
 ## 👨‍🎓 Información del Alumno
-- **Nombre y Apellido**: [Nombre y Apellido del Alumno]
-- **Legajo**: [Número de Legajo]
+- **Nombre y Apellido**: Augusto Giuffrida
+- **Legajo**: 60137
 
 > ⚠️ **IMPORTANTE**: Este trabajo práctico se realiza **INDIVIDUALMENTE**. Aunque se utilizan herramientas de colaboración como Pull Requests y Code Review, estas son para mantener buenas prácticas de desarrollo y un historial ordenado. Todo el desarrollo debe ser realizado por el mismo estudiante.
 
@@ -141,6 +141,93 @@ Desarrollar un sistema de gestión de empleados utilizando Spring Boot con JPA, 
 - JUnit 5.10.1
 - Mockito 5.8.0
 - Git y GitHub
+
+## 🖥️ Instrucciones de Instalación
+### 🔁 Clonar el Repositorio
+```bash
+git clone https://github.com/um-programacion-ii/programacion-2-trabajo-practico-5-AugustoGiuffrida.git
+
+cd programacion-2-trabajo-practico-5-AugustoGiuffrida
+```
+
+### Configurar Docker
+Inicia los contenedores de MySQL y PostgreSQL ejecutando:
+
+```bash
+docker compose up -d
+```
+Esto levantará las bases de datos especificadas en el archivo `docker-compose.yml`.
+
+## ▶️ Ejecutar el Proyecto
+El proyecto usa perfiles `dev`, `mysql` y `postgres`.
+
+```bash
+#Perfil para H2
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+#Perfil para mysql
+mvn spring-boot:run -Dspring-boot.run.profiles=mysql
+
+#Perfil para postgres
+mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+```
+
+## ▶️ Ejecutar tests
+
+```bash
+#Perfil para H2
+mvn test -Dspring.profiles.active=dev
+
+#Perfil para mysql
+mvn test -Dspring.profiles.active=mysql
+
+#Perfil para postgres
+mvn test -Dspring.profiles.active=postgres
+```
+
+## 🌐 Endpoints REST
+
+### 📚 Departamentos
+
+| Método | Endpoint                  | Parámetros                                        | Descripción                          | Respuesta                                                               |
+| ------ | ------------------------- | ------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------- |
+| GET    | `/api/departamentos`      | —                                                 | Listar todos los departamentos       | `200 OK` + lista de `Departamento`                                      |
+| GET    | `/api/departamentos/{id}` | `id` (PathVariable)                               | Obtener un departamento por ID       | `200 OK` + `Departamento` <br> `404 NOT FOUND` si no existe             |
+| POST   | `/api/departamentos`      | `departamento` (RequestBody)                      | Crear un nuevo departamento          | `201 CREATED` + `Departamento` creado                                   |
+| PUT    | `/api/departamentos/{id}` | `id` (PathVariable), `departamento` (RequestBody) | Actualizar un departamento existente | `200 OK` + `Departamento` actualizado <br> `404 NOT FOUND` si no existe |
+| DELETE | `/api/departamentos/{id}` | `id` (PathVariable)                               | Eliminar un departamento             | `204 NO CONTENT` <br> `404 NOT FOUND` si no existe                      |
+
+---
+
+### 📚 Empleados
+
+| Método | Endpoint                                           | Parámetros                                    | Descripción                                    | Respuesta                                                               |
+| ------ | -------------------------------------------------- | --------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------- |
+| GET    | `/api/empleados`                                   | —                                             | Listar todos los empleados                     | `200 OK` + lista de `Empleado`                                          |
+| GET    | `/api/empleados/{id}`                              | `id` (PathVariable)                           | Obtener un empleado por ID                     | `200 OK` + `Empleado` <br> `404 NOT FOUND` si no existe                 |
+| POST   | `/api/empleados`                                   | `empleado` (RequestBody)                      | Crear un empleado                              | `201 CREATED` + `Empleado` creado                                       |
+| PUT    | `/api/empleados/{id}`                              | `id` (PathVariable), `empleado` (RequestBody) | Actualizar un empleado existente               | `200 OK` + `Empleado` actualizado <br> `404 NOT FOUND` si no existe     |
+| DELETE | `/api/empleados/{id}`                              | `id` (PathVariable)                           | Eliminar un empleado                           | `204 NO CONTENT` <br> `404 NOT FOUND` si no existe                      |
+| GET    | `/api/empleados/departamento/{nombreDepartamento}` | `nombreDepartamento` (PathVariable)           | Listar empleados de un departamento por nombre | `200 OK` + lista de `Empleado` <br> `404 NOT FOUND` si no hay empleados |
+| GET    | `/api/empleados/promedio-salario/{departamentoId}` | `departamentoId` (PathVariable)               | Obtener salario promedio de un departamento    | `200 OK` + `BigDecimal` <br> `404 NOT FOUND` si no hay empleados        |
+| GET    | `/api/empleados/rango-salario`                     | `min` y `max` (RequestParam)                  | Listar empleados dentro de un rango de salario | `200 OK` + lista de `Empleado` <br> `404 NOT FOUND` si no hay empleados |
+| GET    | `/api/empleados/fecha-contratacion`                | `inicio` y `fin` (RequestParam, LocalDate)    | Listar empleados contratados entre fechas      | `200 OK` + lista de `Empleado` <br> `404 NOT FOUND` si no hay empleados |
+
+---
+
+### 📚 Proyectos
+
+| Método | Endpoint                         | Parámetros                                    | Descripción                 | Respuesta                                                           |
+| ------ | -------------------------------- | --------------------------------------------- | --------------------------- | ------------------------------------------------------------------- |
+| GET    | `/api/proyectos`                 | —                                             | Listar todos los proyectos  | `200 OK` + lista de `Proyecto`                                      |
+| GET    | `/api/proyectos/{id}`            | `id` (PathVariable)                           | Obtener un proyecto por ID  | `200 OK` + `Proyecto` <br> `404 NOT FOUND` si no existe             |
+| GET    | `/api/proyectos/estado/{status}` | `status` (PathVariable)                       | Listar proyectos por estado | `200 OK` + lista de `Proyecto`                                      |
+| POST   | `/api/proyectos`                 | `proyecto` (RequestBody)                      | Crear un proyecto           | `201 CREATED` + `Proyecto` creado                                   |
+| PUT    | `/api/proyectos/{id}`            | `id` (PathVariable), `proyecto` (RequestBody) | Actualizar un proyecto      | `200 OK` + `Proyecto` actualizado <br> `404 NOT FOUND` si no existe |
+| DELETE | `/api/proyectos/{id}`            | `id` (PathVariable)                           | Eliminar un proyecto        | `204 NO CONTENT` <br> `404 NOT FOUND` si no existe                  |
+
+---
+
 
 ## 📊 Casos de Uso del Sistema
 

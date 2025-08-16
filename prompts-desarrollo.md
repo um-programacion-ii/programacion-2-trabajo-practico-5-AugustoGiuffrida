@@ -145,3 +145,205 @@ Sí, pero perderías la garantía de unicidad y podrías tener entradas repetida
 
 ---
 
+## Prompt 2: Se buscar entender como se configura correctamente los controladores 
+
+
+### Prompt utilizado
+
+Estoy desarrollando un sistema de gestión de empleados con **Spring Boot + JPA**, perfiles para **H2/MySQL/PostgreSQL** y Docker.
+
+Entidades: **Empleado**, **Departamento**, **Proyecto**.
+
+Relaciones:
+
+* `Empleado` — `@ManyToOne` → `Departamento`
+* `Departamento` — `@OneToMany` → `Empleado`
+* `Empleado` — `@ManyToMany` → `Proyecto` (tabla `empleado_proyecto`)
+
+Necesito una guía  específicamente **cuándo y cómo usar `@PathVariable`, `@RequestBody` y `@RequestParam`**.
+
+**Objetivo**
+
+> Explicá **para qué se usan** `@PathVariable` `@RequestBody` y `@RequestParam`, **cuándo aplicarlos**, **cómo combinarlos**, y dame **ejemplos completos** . Incluí **antipatrónes** y **buenas prácticas**.
+
+### Respuesta recibida:
+
+¡Perfecto! Vamos a desglosar el uso de `@PathVariable`, `@RequestParam` y `@RequestBody` en **Spring Boot**, enfocándonos en tu sistema de gestión de empleados. La idea es que quede claro **para qué sirve cada uno, cuándo usarlo, cómo combinarlos y qué evitar**.
+
+---
+
+## 1️⃣ `@PathVariable`
+
+**Qué hace:**
+Se usa para **extraer valores de la URL** y pasarlos como parámetros a tu método del controlador.
+
+**Cuándo usarlo:**
+
+* Cuando el valor es **parte de la ruta del recurso**.
+* Generalmente se usa para **identificar un recurso específico** (ej. un empleado por su ID).
+
+**Ejemplo: Obtener un empleado por ID**
+
+```java
+@RestController
+@RequestMapping("/api/empleados")
+public class EmpleadoController {
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Empleado> getEmpleado(@PathVariable Long id) {
+        Empleado e = empleadoService.findById(id);
+        return ResponseEntity.ok(e);
+    }
+}
+```
+
+**Buen patrón:**
+
+* Usar `@PathVariable` solo para **identificadores** o recursos jerárquicos.
+* Nombrar la variable igual que en la ruta: `/{id}` → `@PathVariable Long id`.
+
+**Antipatrón:**
+
+```java
+// ❌ Evitar pasar parámetros opcionales que no son IDs por PathVariable
+@GetMapping("/empleados/{nombre}")
+public Empleado findByNombre(@PathVariable String nombre) { ... }
+```
+
+* Esto rompe la RESTful convention: nombres o filtros deberían ir en query params (`@RequestParam`), no en la ruta.
+
+---
+
+## 2️⃣ `@RequestParam`
+
+**Qué hace:**
+Se usa para **extraer valores de parámetros de consulta** (query parameters) de la URL.
+
+**Cuándo usarlo:**
+
+* Para **filtrar, paginar o buscar** recursos.
+* Valores opcionales o múltiples parámetros de búsqueda.
+
+**Ejemplo: Buscar empleados por departamento y paginar**
+
+```java
+@GetMapping
+public List<Empleado> buscarEmpleados(
+        @RequestParam(required = false) Long departamentoId,
+        @RequestParam(defaultValue = "0") int pagina,
+        @RequestParam(defaultValue = "10") int size) {
+
+    return empleadoService.buscar(departamentoId, pagina, size);
+}
+```
+
+**URL de ejemplo:**
+
+```
+GET /api/empleados?departamentoId=2&pagina=0&size=10
+```
+
+**Buen patrón:**
+
+* Usar `required=false` para parámetros opcionales.
+* Usar `defaultValue` para paginación o valores por defecto.
+* Evitar sobrecargar la URL con demasiados parámetros, si es compleja, usar POST con `@RequestBody`.
+
+**Antipatrón:**
+
+* Usar `@RequestParam` para **entidades completas** o **payloads grandes**.
+
+```java
+// ❌ No recomendable
+@PostMapping("/empleados")
+public Empleado crearEmpleado(
+        @RequestParam String nombre,
+        @RequestParam String email,
+        @RequestParam Long departamentoId) { ... }
+```
+
+* Esto hace la API poco mantenible y no soporta estructuras complejas (como listas de proyectos).
+
+---
+
+## 3️⃣ `@RequestBody`
+
+**Qué hace:**
+Se usa para **mapear automáticamente el body de la solicitud HTTP** a un objeto Java.
+
+**Cuándo usarlo:**
+
+* Para **crear o actualizar recursos completos**.
+* Cuando el payload es un **JSON complejo**, como un `Empleado` con relaciones a `Departamento` y `Proyectos`.
+
+**Ejemplo: Crear un empleado**
+
+```java
+@PostMapping
+public ResponseEntity<Empleado> crearEmpleado(@RequestBody Empleado empleado) {
+    Empleado guardado = empleadoService.save(empleado);
+    return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+}
+```
+
+**JSON de ejemplo para el body:**
+
+```json
+{
+  "nombre": "Juan Pérez",
+  "email": "juan.perez@empresa.com",
+  "departamento": { "id": 1 },
+  "proyectos": [{ "id": 3 }, { "id": 5 }]
+}
+```
+
+**Buen patrón:**
+
+* Usar `@RequestBody` para **objetos completos**, nunca para datos triviales.
+* Combinar validación con `@Valid`.
+
+**Antipatrón:**
+
+```java
+// ❌ Evitar recibir solo IDs en @RequestBody si es trivial
+@PostMapping("/empleados")
+public Empleado crearEmpleado(@RequestBody Long departamentoId) { ... }
+```
+
+* Mejor usar `@RequestParam` o un DTO con estructura clara.
+
+---
+
+## 4️⃣ Cómo combinarlos
+
+Es común combinar los tres para casos específicos:
+
+**Ejemplo: Actualizar proyecto de un empleado**
+
+```java
+@PutMapping("/{id}/proyectos")
+public ResponseEntity<Empleado> agregarProyectos(
+        @PathVariable Long id,
+        @RequestBody Set<Proyecto> proyectos) {
+
+    Empleado e = empleadoService.findById(id);
+    e.getProyectos().addAll(proyectos);
+    return ResponseEntity.ok(empleadoService.save(e));
+}
+```
+
+* `@PathVariable` → identifica el empleado a modificar
+* `@RequestBody` → recibe los proyectos a agregar
+* `@RequestParam` → podrías usarlo para opciones extra (ej. `notify=true`)
+
+---
+
+## 5️⃣ Resumen rápido de uso
+
+| Anotación       | Uso principal                         | Buen patrón                   | Antipatrón                      |
+| --------------- | ------------------------------------- | ----------------------------- | ------------------------------- |
+| `@PathVariable` | Identificadores en la URL             | `/empleados/{id}`             | Filtrar por nombre u opcionales |
+| `@RequestParam` | Filtros, paginación, flags            | `/empleados?departamentoId=2` | Recibir objetos complejos       |
+| `@RequestBody`  | Crear o actualizar recursos completos | JSON con entidad              | Recibir un solo valor trivial   |
+
+---

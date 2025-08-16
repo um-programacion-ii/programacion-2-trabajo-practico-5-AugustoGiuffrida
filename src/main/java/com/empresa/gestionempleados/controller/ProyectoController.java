@@ -18,11 +18,21 @@ public class ProyectoController {
         this.proyectoService = proyectoService;
     }
 
+
+    /**
+     * Obtiene todos los proyectos.
+     * @return Lista de proyectos
+     */
     @GetMapping
     public ResponseEntity<List<Proyecto>> findAll(){
         return ResponseEntity.ok(proyectoService.findAll());
     }
 
+    /**
+     * Busca un proyecto por su ID.
+     * @param id ID del proyecto
+     * @return Proyecto encontrado o NOT_FOUND si no existe
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Proyecto> findById(@PathVariable Long id){
         try {
@@ -32,16 +42,33 @@ public class ProyectoController {
         }
     }
 
+    /**
+     * Lista proyectos por estado.
+     * @param status Estado del proyecto
+     * @return Lista de proyectos
+     */
     @GetMapping("estado/{status}")
     public ResponseEntity<List<Proyecto>> findByStatus(@PathVariable String status){
             return ResponseEntity.ok(proyectoService.findByStatus(status));
     }
 
+
+    /**
+     * Crea un nuevo proyecto.
+     * @param proyecto Proyecto a crear
+     * @return Proyecto creado con código CREATED
+     */
     @PostMapping
     public ResponseEntity<Proyecto> save(@RequestBody Proyecto proyecto){
         return ResponseEntity.status(HttpStatus.CREATED).body(proyectoService.save(proyecto));
     }
 
+    /**
+     * Actualiza un proyecto existente.
+     * @param id ID del proyecto a actualizar
+     * @param proyecto Datos actualizados del proyecto
+     * @return Proyecto actualizado o NOT_FOUND si no existe
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Proyecto> update(@PathVariable Long id, @RequestBody Proyecto proyecto){
         try {
@@ -51,6 +78,11 @@ public class ProyectoController {
         }
     }
 
+    /**
+     * Elimina un proyecto por su ID.
+     * @param id ID del proyecto a eliminar
+     * @return NO_CONTENT si se elimina correctamente o NOT_FOUND si no existe
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         try {
